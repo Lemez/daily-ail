@@ -1,3 +1,9 @@
+task mail_offline: :environment do
+
+
+	
+end
+
 
 task mail: :environment do
 
@@ -34,69 +40,76 @@ task mail: :environment do
 		@s = a.join(" ").gsub(/[.,'-()!?’]/,"")
 		# p @s
 		
-		
-
 		counter = WordsCounted::Counter.new(@s)
-
 
 		@count_hash = counter.word_density
 		@clean = []
 		@count_hash[0..500].each{|v| @clean << v[0]}
 
+	#######  BEIKU
+		do_beiku @clean
+	########  HAIKU
+		# do_haiku @clean
+	
 
-#######  BEIKU
+		# data = @s.split(" ").sort
+		# hist = Hash[*data.group_by{ |v| v.downcase }.flat_map{ |k, v| [k, v.size] }].sort_by &:last
+		
+	end
 
-		# line1max = 1
-		# line2max = 3
-		# line3max = 5
-		# line3half = 2
-		# line4max = 3
-		# line5max = 1
+def do_beiku words
 
-		# empty = "    "
+	line1max = 1
+	line2max = 3
+	line3max = 5
+	line3half = 2
+	line4max = 3
+	line5max = 1
 
-		# line1 = []
-		# line2 = []
-		# line3 = []
-		# line4 = []
-		# line5 = []
+	empty = "    "
 
-		# @clean.each do |word|
+	line1 = []
+	line2 = []
+	line3 = []
+	line4 = []
+	line5 = []
 
-		# 	line5 << word if line1.length == line1max and line2.length == line2max and line3.length == line3max and line4.length == line4max and line5.length < line5max
+	words.each do |word|
 
-		# 	line4 << word if line1.length == line1max and line2.length == line2max and line3.length == line3max and line4.length < line4max
+			line5 << word if line1.length == line1max and line2.length == line2max and line3.length == line3max and line4.length == line4max and line5.length < line5max
 
-		# 	line3 << word if line1.length == line1max and line2.length == line2max and line3.length > line3half and line3.length < line3max
+			line4 << word if line1.length == line1max and line2.length == line2max and line3.length == line3max and line4.length < line4max
 
-		# 	line3 << empty if line1.length == line1max and line2.length == line2max and line3.length ==line3half 
+			line3 << word if line1.length == line1max and line2.length == line2max and line3.length > line3half and line3.length < line3max
 
-		# 	line3 << word if line1.length == line1max and line2.length == line2max and line3.length < line3half 
+			line3 << empty if line1.length == line1max and line2.length == line2max and line3.length ==line3half 
 
-		# 	line2 << word if line1.length == line1max and line2.length < line2max 
+			line3 << word if line1.length == line1max and line2.length == line2max and line3.length < line3half 
 
-		# 	line1 << word if line1.length < line1max
+			line2 << word if line1.length == line1max and line2.length < line2max 
 
-		# 	if  line1.length == line1max and line2.length == line2max and line3.length == line3max and line4.length == line4max and line5.length == line5max
+			line1 << word if line1.length < line1max
+
+			if  line1.length == line1max and line2.length == line2max and line3.length == line3max and line4.length == line4max and line5.length == line5max
 			
-		# 		ap "        " + line1.join(" "), options = {:indent => 8}
-		# 		ap "    " + line2.join(" "), options = {:indent => 4}
-		# 		ap line3.join(" "), options = {:indent => 0}
-		# 		ap "    " + line4.join(" "), options = {:indent => 4}
-		# 		ap "        " + line5.join(" "), options = {:indent => 8}
-		# 		ap '    '
+				ap "        " + line1.join(" "), options = {:indent => 8}
+				ap "    " + line2.join(" "), options = {:indent => 4}
+				ap line3.join(" "), options = {:indent => 0}
+				ap "    " + line4.join(" "), options = {:indent => 4}
+				ap "        " + line5.join(" "), options = {:indent => 8}
+				ap '    '
 
-		# 		line1 = []
-		# 		line2 = []
-		# 		line3 = []
-		# 		line4 = []
-		# 		line5 = []
+				line1 = []
+				line2 = []
+				line3 = []
+				line4 = []
+				line5 = []
 
-		# 	end
-		# end
+			end
+	end		
+end
 
-########  HAIKU
-
+def do_haiku words
 		line1max = 5
 		line2max = 7
 		line3max = 5
@@ -105,7 +118,7 @@ task mail: :environment do
 		line2 = []
 		line3 = []
 
-		@clean.each do |word|
+		words.each do |word|
 
 			line3 << word if line1.length == line1max and line2.length == line2max and line3.length < line3max
 
@@ -128,16 +141,4 @@ task mail: :environment do
 
 			end
 		end
-
-
-		# p tests.each {|word| p word + ": " + @s.count(word).to_s}
-		# p @s.class
-		# p @s.length
-
-		# data = @s.split(" ").sort
-		# hist = Hash[*data.group_by{ |v| v.downcase }.flat_map{ |k, v| [k, v.size] }].sort_by &:last
-
-		# p hist
-		
-	end
-
+end
