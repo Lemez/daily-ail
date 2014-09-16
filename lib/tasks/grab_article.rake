@@ -1,3 +1,18 @@
+SC_ID = '8030cee18e69f928866fb6230fdd7cbb'
+SC_SECRET = '7c26786b40c45cfb7cc5301326433ad3'
+
+def get_sc words
+	client = Soundcloud.new(:client_id => SC_ID)
+	words.each do |w|
+		
+		track = client.get('/tracks', :q => w, :genres => 'punk').first
+		p w 
+		p track
+		p '----'
+	end
+end
+
+
 def do_beiku words
 
 	line1max = 1
@@ -180,16 +195,22 @@ task mail: :environment do
 
 		@count_hash = counter.word_density
 		@clean = []
+		@mean = []
 		@count_hash[0..500].each{|v| @clean << v[0]}
+
+		@count_hash[400..450].each{|v| @mean << v[0]}
 
 
 	######## OUTPUT as txt for offline
 		#make_offline @clean	
 
 	#######  BEIKU
-		do_beiku @clean
+		# do_beiku @clean
 	########  HAIKU
-		do_haiku @clean
+		# do_haiku @clean
+
+	########## SOUNDCLOUD
+		get_sc @mean
 	
 
 		# sense = WordNet::Sense.new
