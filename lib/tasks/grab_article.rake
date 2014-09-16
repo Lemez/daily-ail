@@ -7,7 +7,7 @@ def get_sc words
 		
 		track = client.get('/tracks', :q => w, :genres => 'punk').first
 		p w 
-		p track
+		ap track
 		p '----'
 	end
 end
