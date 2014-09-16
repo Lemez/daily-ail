@@ -1,62 +1,3 @@
-task mail_offline: :environment do
-
-
-	
-end
-
-
-task mail: :environment do
-
-      a = []
-	  require 'HTTParty'
-	  require 'Nokogiri'
-	  require 'open-uri'
-	  require 'date'
-	  require "awesome_print"
-
-		response = open('http://www.dailymail.co.uk/home/index.html')
-		doc = Nokogiri::HTML(response)
-
-		words = ['the', 'breast', 'sex', 'naked', 'naughty', 'terror', 'horror', 'nightmare', 'afraid', "animal", 'money', 'benefits', 'immigrant', 'shop', 'attack', 'rape', 'vile', 'soldier', 'hero', 'star']
-		tests = ['t', 'e', 'r', 'o', 'terror']
-
-		i = 0
-		tot = 0
-		doc.css('div.articletext').each do |link|
-	
-			i += 1
-			b = link.content.gsub("\n","").gsub("\t","").strip
-			l = b.split(" ").length
-			# p i.to_s + "(" + l.to_s + ") : " + b 
-
-			tot += l
-
-			a << b
-
-		end
-
-		p tot
-		
-		@s = a.join(" ").gsub(/[.,'-()!?’]/,"")
-		# p @s
-		
-		counter = WordsCounted::Counter.new(@s)
-
-		@count_hash = counter.word_density
-		@clean = []
-		@count_hash[0..500].each{|v| @clean << v[0]}
-
-	#######  BEIKU
-		do_beiku @clean
-	########  HAIKU
-		# do_haiku @clean
-	
-
-		# data = @s.split(" ").sort
-		# hist = Hash[*data.group_by{ |v| v.downcase }.flat_map{ |k, v| [k, v.size] }].sort_by &:last
-		
-	end
-
 def do_beiku words
 
 	line1max = 1
@@ -142,3 +83,127 @@ def do_haiku words
 			end
 		end
 end
+
+def do_offline words
+	file = File.open(Rails.root + 'words.txt', 'w')
+	file.puts(words)
+	file.close
+end
+
+task mail_offline: :environment do
+
+
+	require "awesome_print"
+	require 'wordnet'
+
+	file = File.open(Rails.root + 'words.txt', 'r')
+	
+	indices = [100,200,300,400]
+	words = []
+
+	indices.each do |i|
+		word = 	file.gets.gsub("\n", "")
+		words << word
+		99.times {file.gets }
+	end
+
+	lex = WordNet::Lexicon.new
+
+	words.each do |w|
+
+		meaning = lex.lookup_synsets(w)
+		
+		p meaning[0].lexical_link(w)
+		p '+++'
+		p meaning
+		p '-------'
+		
+
+	end
+end
+
+task offline_words: :environment do
+
+	require "awesome_print"
+	require 'wordnet'
+
+	peppa_file = File.open(Rails.root + 'peppa.txt', 'r')
+	adele_file = File.open(Rails.root + 'adele-sly.txt', 'r')
+
+	peppa_words = peppa_file.readlines.to_s
+	adele_words = adele_file.readlines.to_s.gsub(/[.,'-()!?’]/,"")
+
+	counter = WordsCounted::Counter.new(adele_words)
+	@count_hash = counter.word_density
+	@count_hash.each do |w|
+		p w 
+	end
+end
+
+task mail: :environment do
+
+      a = []
+	  require 'HTTParty'
+	  require 'Nokogiri'
+	  require 'open-uri'
+	  require 'date'
+	  require "awesome_print"
+	  require 'wordnet'
+
+		response = open('http://www.dailymail.co.uk/home/index.html')
+		doc = Nokogiri::HTML(response)
+
+		words = ['the', 'breast', 'sex', 'naked', 'naughty', 'terror', 'horror', 'nightmare', 'afraid', "animal", 'money', 'benefits', 'immigrant', 'shop', 'attack', 'rape', 'vile', 'soldier', 'hero', 'star']
+		tests = ['t', 'e', 'r', 'o', 'terror']
+
+		i = 0
+		tot = 0
+		doc.css('div.articletext').each do |link|
+	
+			i += 1
+			b = link.content.gsub("\n","").gsub("\t","").strip
+			l = b.split(" ").length
+			# p i.to_s + "(" + l.to_s + ") : " + b 
+
+			tot += l
+
+			a << b
+
+		end
+
+		p tot
+		
+		@s = a.join(" ").gsub(/[.,'-()!?’]/,"")
+		# p @s
+		
+		counter = WordsCounted::Counter.new(@s)
+
+		@count_hash = counter.word_density
+		@clean = []
+		@count_hash[0..500].each{|v| @clean << v[0]}
+
+
+	######## OUTPUT as txt for offline
+		#make_offline @clean	
+
+	#######  BEIKU
+		do_beiku @clean
+	########  HAIKU
+		do_haiku @clean
+	
+
+		# sense = WordNet::Sense.new
+
+		# [@clean[0],@clean[100]].each do |w|
+
+		# 	word_syn = sense.lookup_synsets( w, WordNet::Noun)
+
+
+
+		# data = @s.split(" ").sort
+		# hist = Hash[*data.group_by{ |v| v.downcase }.flat_map{ |k, v| [k, v.size] }].sort_by &:last
+		
+	end
+
+
+
