@@ -1,10 +1,7 @@
-source 'http://rubygems.org'
+source 'https://rubygems.org'
 
 gem 'awesome_print'
-gem 'awesome_print'
 gem 'heatmap'
-gem 'heatmap'
-gem 'histogram'
 gem 'histogram'
 gem 'httparty'
 gem 'nokogiri'
@@ -14,3 +11,5 @@ gem 'wordcloud', '~> 0.0.11'
 gem 'wordnet'
 gem 'wordnet-defaultdb'
 gem 'words_counted'
+
+gem 'pry'

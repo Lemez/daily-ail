@@ -33,7 +33,11 @@ def do_beiku(words)
   line5max = 1
   empty = '    '
 
-  line1 = line2 = line3 = line4 = line5 = []
+  line1 = []
+  line2 = []
+  line3 = []
+  line4 = []
+  line5 = []
 
   words.each do |word|
 
@@ -53,19 +57,18 @@ def do_beiku(words)
 
     if line1.length == line1max && line2.length == line2max && line3.length == line3max && line4.length == line4max && line5.length == line5max
 
-      ap '        ' + line1.join(' '), options = { indent: 8 }
-      ap '    ' + line2.join(' '), options = { indent: 4 }
-      ap line3.join(' '), options = { indent: 0 }
-      ap '    ' + line4.join(' '), options = { indent: 4 }
-      ap '        ' + line5.join(' '), options = { indent: 8 }
-      ap '    '
+      puts '        ' + line1.join(' ')
+      puts '    ' + line2.join(' ')
+      puts line3.join(' ')
+      puts '    ' + line4.join(' ')
+      puts '        ' + line5.join(' ')
+      puts '    '
 
       line1 = []
       line2 = []
       line3 = []
       line4 = []
       line5 = []
-
     end
   end
 end
