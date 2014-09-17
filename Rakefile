@@ -9,6 +9,7 @@ require 'wordcloud'
 require 'wordnet'
 require 'wordnet-defaultdb'
 require 'words_counted'
+require 'soundcloud'
 
 SC_ID = '8030cee18e69f928866fb6230fdd7cbb'
 SC_SECRET = '7c26786b40c45cfb7cc5301326433ad3'
@@ -183,16 +184,24 @@ task :mail do
   counter = WordsCounted::Counter.new(@s)
 
   @count_hash = counter.word_density
-  @clean = []
-  @count_hash[0..500].each { |v| @clean << v[0] }
+    @clean = []
+    @mean = []
+    @count_hash[0..500].each{|v| @clean << v[0]}
+
+    @count_hash[400..450].each{|v| @mean << v[0]}
+
 
   ######## OUTPUT as txt for offline
-  # make_offline @clean
+    #make_offline @clean  
 
   #######  BEIKU
-  do_beiku @clean
+    # do_beiku @clean
   ########  HAIKU
-  do_haiku @clean
+    # do_haiku @clean
+
+  ########## SOUNDCLOUD
+    get_sc @mean
+  
 
   # sense = WordNet::Sense.new
 
