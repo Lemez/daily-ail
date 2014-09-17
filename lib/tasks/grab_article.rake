@@ -183,6 +183,7 @@ task mail: :environment do
 			tot += l
 
 			a << b
+			p b
 
 		end
 
